@@ -43,7 +43,7 @@ async def roll(ctx):
 
 @client.command(name="wheel")
 async def wheel(ctx):
-    await ctx.send(random.choice(["Hunter", "Rik", "Garrett", "Jack", "Mike"]))
+    await ctx.send(random.choice(["1", "2", "3", "4", "5"]))
 
 
 @client.command(name="roll20")
