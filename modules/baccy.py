@@ -6,6 +6,7 @@ deck = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0,
         1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0,
         1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0]
 
+
 def drawCard(uh, ut, d, amt):
     global playerTotal, bankerTotal
     for _ in range(amt):
@@ -21,12 +22,13 @@ def drawCard(uh, ut, d, amt):
             if bankerTotal > 9:
                 bankerTotal = abs(bankerTotal - 10)
 
-def baccyGame():
+
+def returnBaccyGame():
     r = []
-    
+
     drawCard(playerHand, "p", deck, 2)
     drawCard(bankerHand, "b", deck, 2)
-    
+
     r.append(f"{", ".join([str(x) for x in playerHand])}")
     r.append(playerTotal)
     r.append(f"{", ".join([str(x) for x in bankerHand])}")
@@ -34,7 +36,7 @@ def baccyGame():
 
     if playerTotal > 5 and playerTotal < 8:
         drawCard(playerHand, "p", deck, 1)
-    
+
     if bankerTotal < 3:
         drawCard(bankerHand, "b", deck, 1)
     elif bankerTotal == 3 and playerHand[-1] != 8:
@@ -45,7 +47,7 @@ def baccyGame():
         drawCard(bankerHand, "b", deck, 1)
     elif bankerTotal == 6 and playerHand[-1] in [6, 7]:
         drawCard(bankerHand, "b", deck, 1)
-    
+
     r.append(f"{", ".join([str(x) for x in playerHand])}")
     r.append(playerTotal)
     r.append(f"{", ".join([str(x) for x in bankerHand])}")

@@ -1,6 +1,8 @@
 import random
 import collections
 from modules.wallets import Ledger
+import modules.deck
+
 handRanks = {
     1: "High Card",
     2: "Pair",
@@ -9,17 +11,6 @@ handRanks = {
     5: "Three of a Kind",
     6: "Straight Flush",
 }
-
-
-def buildDeck():
-    suits = ["c", "s", "h", "d"]
-    ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-    d = []
-
-    for r in ranks:
-        for s in suits:
-            d.append(f"{str(r)}{s}")
-    return d
 
 
 def dealStartingHands(usedDeck):
@@ -195,15 +186,15 @@ def returnHandType(wh):
     return f"{handRanks.get(int(wh[-1]))}"
 
 
-def returnGame(wager, player):
+def returnTcpGame(wager, player):
     ledger = Ledger()
 
     if ledger.is_bet_high(player, wager):
         return f"Bet too high for your balance of: {ledger.find_wallet_by_authorid(player).balance}"
     else:
         ledger.update_balance_by_authorid(player, wager * -1)
-    deck = buildDeck()
-    startingHands = dealStartingHands(deck)
+    tcpDeck = modules.deck.returnSuitedDeck()
+    startingHands = dealStartingHands(tcpDeck)
 
     playerHand = startingHands[0:3]
     dealerHand = startingHands[3:]

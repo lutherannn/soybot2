@@ -6,6 +6,8 @@ from modules.randomwiki import *
 from modules.tcp import *
 from modules.baccy import *
 from modules.wallets import Ledger
+from modules.war import *
+
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
@@ -67,7 +69,7 @@ async def randomwiki(ctx):
 @client.command(name="tcp")
 async def tcp(ctx):
     message = ctx.message.content
-    tcpGame = returnGame(int(message.split()[1]), str(ctx.author.id))
+    tcpGame = returnTcpGame(int(message.split()[1]), str(ctx.author.id))
     await ctx.send(f"Player hand: {tcpGame[0]}")
     await ctx.send(f"Dealer hand: {tcpGame[1]}")
     await ctx.send(f"{tcpGame[2]} with a {tcpGame[3]}")
@@ -75,7 +77,7 @@ async def tcp(ctx):
 
 @client.command(name="baccy")
 async def baccy(ctx):
-    game = baccyGame()
+    game = returnBaccyGame()
     print(game)
     await ctx.send(f"Player hand: {game[0]}\nPlayer total: {game[1]}")
     await ctx.send(f"Banker hand: {game[2]}\nBanker total: {game[3]}")
@@ -86,9 +88,16 @@ async def baccy(ctx):
     await ctx.send(game[8])
 
 
+@client.command(name="war")
+async def war(ctx):
+    message = ctx.message.content
+    game = returnWarGame(int(message.split()[1]), str(ctx.author.id))
+    await ctx.send(game)
+
+
 @client.command(name="balance")
 async def balance(ctx):
-    x = Ledger().find_wallet_by_authorid(str(ctx.authorid.id))
+    x = Ledger().find_wallet_by_authorid(str(ctx.author.id))
     if x:
         await ctx.send(f"Your balance is: {x.balance}")
     else:
