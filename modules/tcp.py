@@ -1,5 +1,3 @@
-import os
-import sys
 import random
 import collections
 from modules.wallets import Ledger
@@ -79,7 +77,6 @@ def checkWinners(hand):
 
 
 def findWinner(pw, dw):
-
     if pw[-1] > dw[-1]:
         return "Player wins"
     if dw[-1] > pw[-1]:
@@ -203,7 +200,8 @@ def returnGame(wager, player):
 
     if ledger.is_bet_high(player, wager):
         return f"Bet too high for your balance of: {ledger.find_wallet_by_authorid(player).balance}"
-
+    else:
+        ledger.update_balance_by_authorid(player, wager * -1)
     deck = buildDeck()
     startingHands = dealStartingHands(deck)
 
