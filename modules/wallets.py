@@ -19,14 +19,18 @@ class Ledger:
                     x[2] = " ".join(x[2:4])
                     del x[3]
 
-            self.wallets = [Wallet(x[0], int(x[1]), datetime.strptime(
-                x[2], "%Y-%m-%d %H:%M:%S")) for x in unformatted_wallets]
+            self.wallets = [
+                Wallet(x[0], int(x[1]), datetime.strptime(x[2], "%Y-%m-%d %H:%M:%S"))
+                for x in unformatted_wallets
+            ]
 
     def _save_ledger(self):
         with open("assets/balances.txt", "w") as f:
             for wallet in self.wallets:
-                f.write(f"{wallet.authorid} {wallet.balance} {
-                        wallet.lasthandout.strftime('%Y-%m-%d %H:%M:%S')}\n")
+                f.write(
+                    f"{wallet.authorid} {wallet.balance} {
+                        wallet.lasthandout.strftime('%Y-%m-%d %H:%M:%S')}\n"
+                )
 
     def find_wallet_by_authorid(self, id):
         self._load_ledger()

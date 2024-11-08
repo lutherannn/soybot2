@@ -12,7 +12,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-client = commands.Bot(command_prefix='!', intents=intents)
+client = commands.Bot(command_prefix="!", intents=intents)
 
 
 @client.event
@@ -110,7 +110,8 @@ async def leaderboard(ctx):
     ledger._load_ledger()
 
     sorted_wallets = sorted(
-        ledger.wallets, key=lambda wallet: wallet.balance, reverse=True)
+        ledger.wallets, key=lambda wallet: wallet.balance, reverse=True
+    )
 
     leaderboard_entries = [
         f"{str(client.get_user(int(wallet.authorid))

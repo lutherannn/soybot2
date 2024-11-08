@@ -45,5 +45,4 @@ def returnWarGame(wager, player):
         return f"Dealer's {str(dealerCardDisplay)} beats the player's {str(playerCardDisplay)}"
     else:
         ledger.update_balance_by_authorid(player, wager)
-        ledger.update_balance_by_authorid(player, wager * 2)
         return f"The player and dealer both had {str(playerCardDisplay)}"

@@ -202,11 +202,19 @@ def returnTcpGame(wager, player):
     playerWins = checkWinners(playerHand)
     dealerWins = checkWinners(dealerHand)
     if "Player" in findWinner(playerWins, dealerWins):
-        multipliers = {
-            1: 2, 2: 2, 3: 4, 4: 7, 5: 31, 6: 41
-        }
+        multipliers = {1: 2, 2: 2, 3: 4, 4: 7, 5: 31, 6: 41}
         win_amount = wager * multipliers.get(playerWins[-1], 1)
         ledger.update_balance_by_authorid(player, win_amount)
-        return [printHands(playerHand, dealerHand)[0], printHands(playerHand, dealerHand)[1], findWinner(playerWins, dealerWins), returnHandType(playerWins)]
+        return [
+            printHands(playerHand, dealerHand)[0],
+            printHands(playerHand, dealerHand)[1],
+            findWinner(playerWins, dealerWins),
+            returnHandType(playerWins),
+        ]
     else:
-        return [printHands(playerHand, dealerHand)[0], printHands(playerHand, dealerHand)[1], findWinner(playerWins, dealerWins), returnHandType(dealerWins)]
+        return [
+            printHands(playerHand, dealerHand)[0],
+            printHands(playerHand, dealerHand)[1],
+            findWinner(playerWins, dealerWins),
+            returnHandType(dealerWins),
+        ]

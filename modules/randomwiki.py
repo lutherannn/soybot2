@@ -4,6 +4,7 @@ import sys
 import time
 import textwrap
 
+
 def getArticle():
     validTitle = False
     while not validTitle:
@@ -35,4 +36,8 @@ def getArticle():
         f"https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&pageids={id}"
     )
     pageData = pr.json()
-    return [data, pageData["query"]["pages"][str(id)]["extract"], f"<https://en.wikipedia.org/?curid={str(id)}>"]
+    return [
+        data,
+        pageData["query"]["pages"][str(id)]["extract"],
+        f"<https://en.wikipedia.org/?curid={str(id)}>",
+    ]
