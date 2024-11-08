@@ -2,7 +2,7 @@ import os
 import sys
 import random
 import collections
-
+from wallets import Ledger
 handRanks = {
     1: "High Card",
     2: "Pair",
@@ -199,26 +199,12 @@ def returnHandType(wh):
 
 
 def returnGame(wager, player):
-    with open("assets/balances.txt", "r+") as f:
-        buff = ""
-        balances = [x.strip().split(" ") for x in f.readlines()]
-        for i, x in enumerate(balances):
-            if x[0] == str(player):
-                if wager <= int(balances[i][1]):
-                    balances[i][1] = int(balances[i][1]) - wager
-                    f.seek(0)
-                    for y in balances:
-                        buff += " ".join([str(a) for a in y])
-                        buff += "\n"
-                    f.write(buff)
-                    f.truncate()
-                else:
-                    f.close()
-                    return f"Bet too high for your balance of: {balances[i][1]}"
-        f.close()
+    ledger = Ledger()
+
+    if ledger.is_bet_high(player, wager):
+        return f"Bet too high for your balance of: {ledger.find_wallet_by_authorid(player).balance}"
 
     deck = buildDeck()
-
     startingHands = dealStartingHands(deck)
 
     playerHand = startingHands[0:3]
@@ -227,30 +213,11 @@ def returnGame(wager, player):
     playerWins = checkWinners(playerHand)
     dealerWins = checkWinners(dealerHand)
     if "Player" in findWinner(playerWins, dealerWins):
-        with open("assets/balances.txt", "r+") as f:
-            buff = ""
-            balances = [x.strip().split(" ") for x in f.readlines()]
-            for i, x in enumerate(balances):
-                if x[0] == str(player):
-                    if playerWins[-1] == 1 or playerWins[-1] == 2:
-                        balances[i][1] = (wager * 2) + int(balances[i][1])
-                    elif playerWins[-1] == 3:
-                        balances[i][1] = (wager * 4) + int(balances[i][1])
-                    elif playerWins[-1] == 4:
-                        balances[i][1] = (wager * 7) + int(balances[i][1])
-                    elif playerWins[-1] == 5:
-                        balances[i][1] = (wager * 31) + int(balances[i][1])
-                    elif playerWins[-1] == 6:
-                        balances[i][1] = (wager * 41) + int(balances[i][1])
-                    f.seek(0)
-                    for y in balances:
-                        buff += " ".join([str(a) for a in y])
-                        buff += "\n"
-                    f.write(buff)
-                    f.truncate()
-            f.close()
+        multipliers = {
+            1: 2, 2: 2, 3: 4, 4: 7, 5: 31, 6: 41
+        }
+        win_amount = wager * multipliers.get(playerWins[-1], 1)
+        ledger.update_balance_by_authorid(player, win_amount)
         return [printHands(playerHand, dealerHand)[0], printHands(playerHand, dealerHand)[1], findWinner(playerWins, dealerWins), returnHandType(playerWins)]
-    if "Dealer" in findWinner(playerWins, dealerWins):
-        return [printHands(playerHand, dealerHand)[0], printHands(playerHand, dealerHand)[1], findWinner(playerWins, dealerWins), returnHandType(dealerWins)]
     else:
-        return [printHands(playerHand, dealerHand)[0], printHands(playerHand, dealerHand)[1], findWinner(playerWins, dealerWins), returnHandType(playerWins)]
+        return [printHands(playerHand, dealerHand)[0], printHands(playerHand, dealerHand)[1], findWinner(playerWins, dealerWins), returnHandType(dealerWins)]

@@ -5,23 +5,14 @@ from discord.ext import commands
 from modules.randomwiki import *
 from modules.tcp import *
 from modules.baccy import *
-from modules.handout import giveHandout
+from modules.wallets import Ledger
 from datetime import datetime
 from dateutil import parser
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-
 client = commands.Bot(command_prefix='!', intents=intents)
-
-handoutLog = {
-    123456789: "2024-11-06 13:31:50",
-    123456789: "2024-11-06 13:31:50",
-    123456789: "2024-11-06 13:31:50",
-    123456789: "2024-11-06 13:31:50",
-}
-
 
 @client.event
 async def on_ready():
@@ -53,15 +44,10 @@ async def roll20(ctx):
 
 @client.command(name="handout")
 async def handout(ctx):
-    now = datetime.now()
-    userId = ctx.author.id
-    claimedDate = parser.parse(handoutLog[userId])
-    if (now - claimedDate).days >= 1:
-        if (giveHandout(str(ctx.author.id))):
-            await ctx.send("Check your paypal")
-            handoutLog[userId] = " ".join(str(now).split(".")[0:-1])
-        else:
-            await ctx.send("Soybot's wallet is empty.")
+    x = Ledger()
+    if x.is_handout_valid(str(ctx.author.id)):
+        x.update_balance_by_authorid(str(ctx.author.id))
+        await ctx.send("Check your paypal")
     else:
         await ctx.send("You already claimed your daily cash")
 
@@ -69,7 +55,6 @@ async def handout(ctx):
 @client.command(name="soyroulette")
 async def soyroulette(ctx):
     await ctx.send("BANG!" if random.randrange(1, 7) == 6 else "Click.")
-
 
 @client.command(name="randomwiki")
 async def randomwiki(ctx):
@@ -100,29 +85,25 @@ async def baccy(ctx):
     await ctx.send(f"Banker hand: {game[6]}\nBanker total: {game[7]}")
     await ctx.send(game[8])
 
-
 @client.command(name="balance")
 async def balance(ctx):
-    with open("assets/balances.txt", "r") as f:
-        bals = [x.strip().split(" ") for x in f.readlines()]
-        for x in bals:
-            if x[0] == str(ctx.author.id):
-                await ctx.send(f"Your balance is: {x[1]}")
-
+    x = Ledger().find_wallet_by_authorid(str(ctx.authorid.id))
+    if x:
+        await ctx.send(f"Your balance is: {x.balance}")
+    else:
+        await ctx.send("Couldn't find your account")
 
 @client.command(name="leaderboard")
 async def leaderboard(ctx):
-    t = []
-    r = []
-    with open("assets/balances.txt", "r") as f:
-        balances = sorted([int(x.strip().split()[1])
-                          for x in f.readlines()], reverse=True)
-        for bal in balances:
-            f.seek(0)
-            for line in f.readlines():
-                if str(bal) in line.strip() and line.strip() not in t:
-                    t.append(line.strip())
-    for x in t:
-        x = x.split()
-        r.append(f"{str(client.get_user(int(x[0]))).replace("_", "")}: {x[1]}")
-    await ctx.send("\n".join(r))
+    ledger = Ledger()
+    ledger._load_ledger() 
+    
+    sorted_wallets = sorted(ledger.wallets, key=lambda wallet: wallet.balance, reverse=True)
+    
+    leaderboard_entries = [
+        f"{str(client.get_user(int(wallet.authorid))).replace('_', '')}: {wallet.balance}"
+        for wallet in sorted_wallets
+    ]
+    
+    await ctx.send("\n".join(leaderboard_entries))
+
