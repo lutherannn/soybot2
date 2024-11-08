@@ -69,16 +69,18 @@ async def randomwiki(ctx):
 @client.command(name="tcp")
 async def tcp(ctx):
     message = ctx.message.content
-    tcpGame = returnTcpGame(int(message.split()[1]), str(ctx.author.id))
-    await ctx.send(f"Player hand: {tcpGame[0]}")
-    await ctx.send(f"Dealer hand: {tcpGame[1]}")
-    await ctx.send(f"{tcpGame[2]} with a {tcpGame[3]}")
+    if int(message.split()[1]) < 0:
+        await ctx.send("Bet must be greater than 0")
+    else:
+        tcpGame = returnTcpGame(int(message.split()[1]), str(ctx.author.id))
+        await ctx.send(f"Player hand: {tcpGame[0]}")
+        await ctx.send(f"Dealer hand: {tcpGame[1]}")
+        await ctx.send(f"{tcpGame[2]} with a {tcpGame[3]}")
 
 
 @client.command(name="baccy")
 async def baccy(ctx):
     game = returnBaccyGame()
-    print(game)
     await ctx.send(f"Player hand: {game[0]}\nPlayer total: {game[1]}")
     await ctx.send(f"Banker hand: {game[2]}\nBanker total: {game[3]}")
     await ctx.send("-----------------------------------------")
@@ -91,8 +93,11 @@ async def baccy(ctx):
 @client.command(name="war")
 async def war(ctx):
     message = ctx.message.content
-    game = returnWarGame(int(message.split()[1]), str(ctx.author.id))
-    await ctx.send(game)
+    if int(message.content.split()[1]) < 0:
+        await ctx.send("Bet must be greater than 0")
+    else:
+        game = returnWarGame(int(message.split()[1]), str(ctx.author.id))
+        await ctx.send(game)
 
 
 @client.command(name="balance")
