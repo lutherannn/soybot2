@@ -1,4 +1,4 @@
 assets/*
-**/__pycache__
+modules/__pycache__
 soybot2-testing.py
 soybot2-testing-old.py
