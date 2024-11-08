@@ -2,7 +2,7 @@ import os
 import sys
 import random
 import collections
-from wallets import Ledger
+from modules.wallets import Ledger
 handRanks = {
     1: "High Card",
     2: "Pair",
