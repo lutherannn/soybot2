@@ -54,7 +54,7 @@ class Ledger:
         self._load_ledger()
         wallet = self.find_wallet_by_authorid(id)
         if wallet:
-            return datetime.now() - wallet.lasthandout >= timedelta(days=1)
+            return datetime.now() - wallet.lasthandout >= timedelta(hours=1)
         return False
 
     def is_bet_high(self, id, bet):
@@ -63,7 +63,6 @@ class Ledger:
         if wallet.balance < bet:
             return True
         return False
-
 
 class Wallet:
     def __init__(self, authorid, balance, lasthandout):
