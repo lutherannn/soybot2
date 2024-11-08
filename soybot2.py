@@ -6,13 +6,12 @@ from modules.randomwiki import *
 from modules.tcp import *
 from modules.baccy import *
 from modules.wallets import Ledger
-from datetime import datetime
-from dateutil import parser
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
 client = commands.Bot(command_prefix='!', intents=intents)
+
 
 @client.event
 async def on_ready():
@@ -46,7 +45,7 @@ async def roll20(ctx):
 async def handout(ctx):
     x = Ledger()
     if x.is_handout_valid(str(ctx.author.id)):
-        x.update_balance_by_authorid(str(ctx.author.id))
+        x.update_balance_by_authorid(str(ctx.author.id), 1000)
         await ctx.send("Check your paypal")
     else:
         await ctx.send("You already claimed your daily cash")
@@ -55,6 +54,7 @@ async def handout(ctx):
 @client.command(name="soyroulette")
 async def soyroulette(ctx):
     await ctx.send("BANG!" if random.randrange(1, 7) == 6 else "Click.")
+
 
 @client.command(name="randomwiki")
 async def randomwiki(ctx):
@@ -85,6 +85,7 @@ async def baccy(ctx):
     await ctx.send(f"Banker hand: {game[6]}\nBanker total: {game[7]}")
     await ctx.send(game[8])
 
+
 @client.command(name="balance")
 async def balance(ctx):
     x = Ledger().find_wallet_by_authorid(str(ctx.authorid.id))
@@ -93,17 +94,19 @@ async def balance(ctx):
     else:
         await ctx.send("Couldn't find your account")
 
+
 @client.command(name="leaderboard")
 async def leaderboard(ctx):
     ledger = Ledger()
-    ledger._load_ledger() 
-    
-    sorted_wallets = sorted(ledger.wallets, key=lambda wallet: wallet.balance, reverse=True)
-    
+    ledger._load_ledger()
+
+    sorted_wallets = sorted(
+        ledger.wallets, key=lambda wallet: wallet.balance, reverse=True)
+
     leaderboard_entries = [
-        f"{str(client.get_user(int(wallet.authorid))).replace('_', '')}: {wallet.balance}"
+        f"{str(client.get_user(int(wallet.authorid))
+               ).replace('_', '')}: {wallet.balance}"
         for wallet in sorted_wallets
     ]
-    
-    await ctx.send("\n".join(leaderboard_entries))
 
+    await ctx.send("\n".join(leaderboard_entries))
