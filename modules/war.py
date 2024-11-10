@@ -6,8 +6,12 @@ from modules.wallets import Ledger
 def returnWarGame(wager, player):
     ledger = Ledger()
     deck = modules.deck.returnNonSuitedDeck()
-    playerCard = random.choice(deck)
-    dealerCard = random.choice(deck)
+    card = random.choice(deck)
+    playerCard = card
+    deck.remove(card)
+    card = random.choice(deck)
+    dealerCard = card
+    deck.remove(card)
     playerCardDisplay = ""
     dealerCardDisplay = ""
 

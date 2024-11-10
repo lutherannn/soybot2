@@ -93,7 +93,7 @@ async def baccy(ctx):
 @client.command(name="war")
 async def war(ctx):
     message = ctx.message.content
-    if int(message.content.split()[1]) < 0:
+    if int(message.split()[1]) < 0:
         await ctx.send("Bet must be greater than 0")
     else:
         game = returnWarGame(int(message.split()[1]), str(ctx.author.id))
