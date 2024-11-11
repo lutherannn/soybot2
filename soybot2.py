@@ -49,7 +49,7 @@ async def handout(ctx):
     if x.is_handout_valid(str(ctx.author.id)):
         x.update_balance_by_authorid(str(ctx.author.id), 1000)
         await ctx.send("Check your paypal")
-        await ctx.send(f"Your new balance: {x.find_wallet_by_authorid(ctx.author.id).balance}")
+        await ctx.send(f"Your new balance: {x.find_wallet_by_authorid(str(ctx.author.id)).balance}")
     else:
         await ctx.send("You already claimed your daily cash")
 
