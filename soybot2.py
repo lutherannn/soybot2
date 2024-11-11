@@ -101,6 +101,24 @@ async def war(ctx):
         await ctx.send(game)
 
 
+@client.command(name="roulette")
+async def roulette(ctx):
+    message = ctx.message.content
+    if len(message.split()) != 3:
+        await ctx.send("Usage: !roulette <bet> <wager>")
+        await ctx.send("Example: !roulette red 100")
+        await ctx.send("Or: !roulette 27 100")
+    elif int(message.split()[2]) < 0:
+        await ctx.send("Bet must be greater than 0")
+    else:
+        game = returnRouletteGame(message.split()[1], message.split()[
+                                  2], str(ctx.author.id))
+        await ctx.send(game[0])
+        if len(game) > 1:
+            time.sleep(2)
+            await ctx.send(game[1])
+
+
 @client.command(name="balance")
 async def balance(ctx):
     x = Ledger().find_wallet_by_authorid(str(ctx.author.id))
