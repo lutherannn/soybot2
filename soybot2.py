@@ -114,7 +114,9 @@ async def roulette(ctx):
     elif int(message.split()[2]) < 0:
         await ctx.send("Bet must be greater than 0")
     else:
-        game = returnRouletteGame(message.split()[1], message.split()[
+        wager = message.split()[1]
+        wager = wager.split(",")
+        game = returnRouletteGame(wager, message.split()[
                                   2], str(ctx.author.id))
         await ctx.send(game[0])
         if len(game) > 1:
