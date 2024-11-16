@@ -108,6 +108,9 @@ async def roulette(ctx):
         await ctx.send("Usage: !roulette <bet> <wager>")
         await ctx.send("Example: !roulette red 100")
         await ctx.send("Or: !roulette 27 100")
+        await ctx.send("Or for multiple bets: !roulette odd,black,9 100")
+        await ctx.send("Notice no spaces after commas ^")
+        await ctx.send("Be aware that your wager counts for each bet! A bet of 500 for two numbers would cost 1000!")
     elif int(message.split()[2]) < 0:
         await ctx.send("Bet must be greater than 0")
     else:

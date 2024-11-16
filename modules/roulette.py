@@ -34,35 +34,36 @@ def isEven(num):
     return False
 
 
-def returnRouletteGame(wager, wagerAmt, player):
+def returnRouletteGame(wagerList, wagerAmt, player):
     wagerAmt = int(wagerAmt)
     ledger = Ledger()
     r = []
     if ledger.is_bet_high(player, wagerAmt):
         return [f"Bet too high for your balance of: {
             ledger.find_wallet_by_author_id(player).balance}"]
+
+    startingTotal = ledger.find_wallet_by_authorid(str(player)).balance
     number = random.choice(allNums)
 
     r.append(f"Number is: {number}, {getColor(number).capitalize()}")
-    if wager not in allWagers:
+    if len([x for x in wagerList if x not in allWagers]) > 0:
         return ["Invalid wager, run command with no arguments for examples"]
-    ledger.update_balance_by_authorid(player, wagerAmt * -1)
-    if wager == "red" and getColor(number) == "red":
-        ledger.update_balance_by_authorid(player, wagerAmt * 2)
-        r.append(f"You win: {wagerAmt * 2}")
-    elif wager == "black" and getColor(number) == "black":
-        ledger.update_balance_by_authorid(player, wagerAmt * 2)
-        r.append(f"You win: {wagerAmt * 2}")
-    elif wager == "even" and isEven(number):
-        ledger.update_balance_by_authorid(player, wagerAmt * 2)
-        r.append(f"You win: {wagerAmt * 2}")
-    elif wager == "odd" and not isEven(number):
-        ledger.update_balance_by_authorid(player, wagerAmt * 2)
-        r.append(f"You win: {wagerAmt * 2}")
-    elif wager == number:
-        ledger.update_balance_by_authorid(player, wagerAmt * 36)
-        r.append(f"You win: {wagerAmt * 36}")
-    else:
-        r.append(f"You lose: {wagerAmt}")
+    for wager in wagerList:
+        ledger.update_balance_by_authorid(player, wagerAmt * -1)
+        if wager == "red" and getColor(number) == "red":
+            ledger.update_balance_by_authorid(player, wagerAmt * 2)
+        elif wager == "black" and getColor(number) == "black":
+            ledger.update_balance_by_authorid(player, wagerAmt * 2)
+        elif wager == "even" and isEven(number):
+            ledger.update_balance_by_authorid(player, wagerAmt * 2)
+        elif wager == "odd" and not isEven(number):
+            ledger.update_balance_by_authorid(player, wagerAmt * 2)
+        elif wager == number:
+            ledger.update_balance_by_authorid(player, wagerAmt * 36)
 
+        if startingTotal < ledger.find_wallet_by_authorid(str(player)).balance:
+            r.append(f"You win! Your new balance is: {
+                     ledger.find_wallet_by_authorid(str(player)).balance}")
+        else:
+            r.append(f"You lose: {wagerAmt * len(wagerList)}")
     return r
