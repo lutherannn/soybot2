@@ -7,6 +7,7 @@ from modules.tcp import *
 from modules.baccy import *
 from modules.wallets import Ledger
 from modules.war import *
+from modules.roulette import *
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -35,7 +36,8 @@ async def roll(ctx):
 
 @client.command(name="wheel")
 async def wheel(ctx):
-    await ctx.send(random.choice(["1", "2", "3", "4", "5"]))
+    with open("assets/wheel.txt") as f:
+        await ctx.send(random.choice(f.readlines()).strip())
 
 
 @client.command(name="roll20")
@@ -149,3 +151,6 @@ async def leaderboard(ctx):
     ]
 
     await ctx.send("\n".join(leaderboard_entries))
+
+with open("assets/key.txt") as f:
+    client.run(f.readlines()[0].strip())
